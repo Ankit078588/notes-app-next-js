@@ -1,4 +1,5 @@
 'use client'
+import ShimmerUI from "@/components/ShimmerUI";
 import TodoItem from "@/components/TodoItem";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -31,7 +32,13 @@ export default function Dashboard() {
             const res = await axios.get('/api/todos');
             const todos = res.data?.todos;
             setAllTodos(todos);
-            setFilteredTodos(todos);
+
+            const specificFilterTodo = todos.filter((todo: TodoInterface) => {
+                if(activeFilter == 'all') return true;
+                else if(activeFilter === 'active') return todo.completed === false;
+                else if(activeFilter === 'completed') return todo.completed === true;
+            } )
+            setFilteredTodos(specificFilterTodo);
         } catch(e) {
             console.log(e);
         } finally {
@@ -90,7 +97,7 @@ export default function Dashboard() {
             {/* Add todo section */}
             <div className="w-2xl bg-slate-700 mx-auto rounded p-4 mb-10">
                 <div className="flex justify-between">
-                    <p className="text-white text-3xl font-semibold text-center">Transaction Dashboard</p>
+                    <p className="text-white text-3xl font-semibold text-center">Todo Dashboard</p>
                     <span>O</span>
                 </div>
 
@@ -103,11 +110,10 @@ export default function Dashboard() {
             </div>
 
 
+
             {/* Show loading while fetching todo data */}
             {loadingData && allTodos.length === 0 && (
-                <div className="w-2xl bg-slate-700 mx-auto rounded p-4">
-                    <p className="text-center text-gray-100">Loading todos...</p>
-                </div>
+                <ShimmerUI />
             )}
 
 
