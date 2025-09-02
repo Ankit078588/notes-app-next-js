@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/bd";
-import { UserModel } from "@/models/user";
+import { UserModel } from "@/models/userModel";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -29,9 +30,18 @@ export async function POST(request: NextRequest) {
         }
 
         // generate Token
-        const token = 'abcdefgh';
+        // const token = 'ajajsjdsjdjskdskd';
+        
+        // set token in cookie
+        const cookieStore = await cookies();
+        cookieStore.set('userId', user._id, {
+            httpOnly: true,
+            maxAge: 30*24*60*60
+        });
+        
+        // send response
         return NextResponse.json(
-            {success: true, message: 'Login successful.', token}, 
+            {success: true, message: 'Login successful.'}, 
             {status: 200}
         );
     } catch(e) {
