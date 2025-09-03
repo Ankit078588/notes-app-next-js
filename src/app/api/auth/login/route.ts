@@ -2,6 +2,9 @@ import { connectDB } from "@/lib/bd";
 import { UserModel } from "@/models/userModel";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
+import { SessionModel } from "@/models/sessionModel";
 
 
 
@@ -24,17 +27,20 @@ export async function POST(request: NextRequest) {
         }
 
         // check password is correct OR not
-        const isMatch = password === user.password;
+        const isMatch = await bcrypt.compare(password, user.password)
         if(!isMatch) {
             return NextResponse.json({success: false, message: 'Incorrect credentials.'}, {status: 400});
         }
 
+        // create session 
+        const newSession = await SessionModel.create( {userId: user._id} );
+
         // generate Token
-        // const token = 'ajajsjdsjdjskdskd';
+        const token = jwt.sign({_id: newSession._id}, process.env.JWT_SECRET as string);
         
         // set token in cookie
         const cookieStore = await cookies();
-        cookieStore.set('userId', user._id, {
+        cookieStore.set('token', token, {
             httpOnly: true,
             maxAge: 30*24*60*60
         });
