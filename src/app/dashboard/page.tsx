@@ -2,6 +2,7 @@
 import ShimmerUI from "@/components/ShimmerUI";
 import TodoItem from "@/components/TodoItem";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa6";
@@ -22,6 +23,8 @@ export default function Dashboard() {
     const [loadingData, setLoadingData] = useState(true);
     const [activeFilter, setActiveFilter] = useState('all');
 
+    const router = useRouter();
+
     useEffect( () => {
         fetchTodos();
     }, [] )
@@ -41,6 +44,9 @@ export default function Dashboard() {
             setFilteredTodos(specificFilterTodo);
         } catch(e) {
             console.log(e);
+            if(e.response.status === 401) {
+                router.push('/login');
+            }
         } finally {
             setLoadingData(false);
         }
