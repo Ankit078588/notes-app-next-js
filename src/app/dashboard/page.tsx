@@ -1,11 +1,12 @@
 'use client'
 import ShimmerUI from "@/components/ShimmerUI";
 import TodoItem from "@/components/TodoItem";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaUser } from "react-icons/fa6";
+import { MdOutlineLightMode } from "react-icons/md";
 
 
 interface TodoInterface {
@@ -22,11 +23,17 @@ export default function Dashboard() {
     const [filteredTodos, setFilteredTodos] = useState([]);
     const [loadingData, setLoadingData] = useState(true);
     const [activeFilter, setActiveFilter] = useState('all');
+    const [userDetails, setUserDetails] = useState({
+        name: "",
+        email: ""
+    });
+    const [showUserModal, setShowUserModal] = useState(false);
 
     const router = useRouter();
 
     useEffect( () => {
         fetchTodos();
+        fetchUser();
     }, [] )
 
     async function fetchTodos() {
@@ -42,13 +49,28 @@ export default function Dashboard() {
                 else if(activeFilter === 'completed') return todo.completed === true;
             } )
             setFilteredTodos(specificFilterTodo);
-        } catch(e) {
-            console.log(e);
+        } catch(error) {
+            const e = error as AxiosError<{message: string}>
+            if(!e.response) return toast.error(e.message);
             if(e.response.status === 401) {
                 router.push('/login');
             }
         } finally {
             setLoadingData(false);
+        }
+    }
+
+    async function fetchUser() {
+        try {
+            const res = await axios.get('/api/auth/user');
+            const user = res.data?.user;
+            setUserDetails(user);
+        } catch(error) {
+            const e = error as AxiosError<{message: string}>
+            if(!e.response) return;
+            if(e.response.status === 401) {
+                router.push('/login');
+            }
         }
     }
 
@@ -98,14 +120,43 @@ export default function Dashboard() {
         }
     }
 
+    async function handleLogout() {
+        try {
+            const res = await axios.post('/api/auth/logout');
+            const user = res.data?.user;
+            setUserDetails(user);
+        } catch(error) {
+            const e = error as AxiosError<{message: string}>
+            if(!e.response) return toast.error(e.message);
+            if(e.response.status === 401) {
+                router.push('/login');
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen w-screen bg-gray-800 p-10">
             {/* Add todo section */}
             <div className="w-2xl bg-slate-700 mx-auto rounded p-4 mb-10">
-                <div className="flex justify-between">
+                <div className="flex justify-between relative">
                     <p className="text-white text-3xl font-semibold text-center">Todo Dashboard</p>
-                    <span>O</span>
+                    <div className="flex text-white gap-3 items-center text-xl"> 
+                        <span className="cursor-pointer"> <MdOutlineLightMode /> </span> 
+                        <span className="cursor-pointer" onClick={() => setShowUserModal(p => !p)}> <FaUser /> </span>
+                    </div>
+                    {/* User Details Modal */}
+                    {showUserModal && 
+                        <div className="w-[200px] h-[140px] bg-slate-800 border-1 border-gray-500 rounded-md absolute top-[100%] right-0 p-3">
+                            <div className="text-gray-300 text-xl mb-['2px'] font-semibold">{userDetails.name}</div>
+                            <div className="text-gray-400 mb-6">{userDetails.email}</div>
+                            <div>
+                                <button className="text-white bg-red-900 py-1 px-4 rounded cursor-pointer" onClick={handleLogout}>Logout</button>
+                            </div>
+                        </div>
+                    }
                 </div>
+
+                
 
                 <div className="mt-6">
                     <div className="border-1 border-white rounded flex justify-between items-center px-2">

@@ -8,8 +8,6 @@ import { SessionModel } from "@/models/sessionModel";
 
 export async function getLoggedInUser() {
     try {
-        // const UnauthorizedResponse = NextResponse.json({message: 'Unauthorized. Please Login.'}, {status: 401});
-
         const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
         if(!token) return null;
@@ -28,7 +26,7 @@ export async function getLoggedInUser() {
 
         // find user using session details
         const userId = session.userId;
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findById(userId).select('-password -__v');
         if(!user) return null;
 
         return user;

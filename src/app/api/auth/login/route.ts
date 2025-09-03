@@ -32,7 +32,13 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Incorrect credentials.'}, {status: 400});
         }
 
-        // create session 
+        // delete previous session
+        const activeSession = await SessionModel.findOne({userId: user._id});
+        if(activeSession) {
+            await SessionModel.deleteOne({userId: user._id});
+        }
+
+        // create new session 
         const newSession = await SessionModel.create( {userId: user._id} );
 
         // generate Token
