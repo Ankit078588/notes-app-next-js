@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/bd";
 import { UserModel } from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 
 
@@ -20,8 +21,10 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Email is already registered.'}, {status: 400})
         }
 
-        // create new User in DB
-        const newUser = await UserModel.create({name, email, password});
+        // hash password + create new User in DB
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const newUser = await UserModel.create({name, email, password: hashedPassword});
 
         // Send response
         return NextResponse.json(
