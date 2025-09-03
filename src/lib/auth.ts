@@ -5,14 +5,6 @@ import { UserModel } from "@/models/userModel";
 import { SessionModel } from "@/models/sessionModel";
 
 
-// extract userId from cookie + find user with userId
-// const cookieStore = await cookies();
-// const userId = cookieStore.get('userId')?.value;
-// const user = await UserModel.findOne({_id: userId});
-// if(!userId || !user) {
-//     return NextResponse.json({message: 'Unauthorized. Please login.'}, {status: 401})
-// }
-
 
 
 export async function getLoggedInUser() {
