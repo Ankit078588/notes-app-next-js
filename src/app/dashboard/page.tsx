@@ -123,14 +123,14 @@ export default function Dashboard() {
     async function handleLogout() {
         try {
             const res = await axios.post('/api/auth/logout');
-            const user = res.data?.user;
-            setUserDetails(user);
+            toast.success(res.data?.message);
+            router.push('/login');
         } catch(error) {
             const e = error as AxiosError<{message: string}>
+
             if(!e.response) return toast.error(e.message);
-            if(e.response.status === 401) {
-                router.push('/login');
-            }
+            if(e.response) return toast.error(e.response.data.message);
+            toast.error('Something went wrong.')
         }
     }
 

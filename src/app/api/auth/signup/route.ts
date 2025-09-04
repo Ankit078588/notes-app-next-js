@@ -24,11 +24,11 @@ export async function POST(request: NextRequest) {
         // hash password + create new User in DB
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = await UserModel.create({name, email, password: hashedPassword});
+        await UserModel.create({name, email, password: hashedPassword});
 
         // Send response
         return NextResponse.json(
-            {success: true, message: 'Signup successful.', newUser: newUser}, 
+            {success: true, message: 'Signup successful.'}, 
             {status: 200}
         );
     } catch(e) {
