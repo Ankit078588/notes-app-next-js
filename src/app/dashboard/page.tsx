@@ -19,8 +19,8 @@ interface TodoInterface {
 
 export default function Dashboard() {
     const [todoText, setTodoText] = useState('');
-    const [allTodos, setAllTodos] = useState([]);
-    const [filteredTodos, setFilteredTodos] = useState([]);
+    const [allTodos, setAllTodos] = useState<TodoInterface[]>([]);
+    const [filteredTodos, setFilteredTodos] = useState<TodoInterface[]>([]);
     const [loadingData, setLoadingData] = useState(true);
     const [activeFilter, setActiveFilter] = useState('all');
     const [userDetails, setUserDetails] = useState({
@@ -69,6 +69,7 @@ export default function Dashboard() {
             const e = error as AxiosError<{message: string}>
             if(!e.response) return;
             if(e.response.status === 401) {
+                toast.error('Session Expired. Please Login again.')
                 router.push('/login');
             }
         }
