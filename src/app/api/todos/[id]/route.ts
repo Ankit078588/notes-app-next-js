@@ -1,7 +1,6 @@
+import { getLoggedInUser } from "@/lib/auth";
 import { connectDB } from "@/lib/bd";
 import { TodoModel } from "@/models/todoModel";
-import { UserModel } from "@/models/userModel";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -11,10 +10,8 @@ export async function DELETE(request: NextRequest, context: {params: Promise<{id
         await connectDB();
 
         // extract userId from cookie + find user with userId
-        const cookieStore = await cookies();
-        const userId = cookieStore.get('userId')?.value;
-        const user = await UserModel.findOne({_id: userId});
-        if(!userId || !user) {
+        const user = await getLoggedInUser();     // null | user_object
+        if(!user) {
             return NextResponse.json({message: 'Unauthorized. Please login.'}, {status: 401})
         }
 

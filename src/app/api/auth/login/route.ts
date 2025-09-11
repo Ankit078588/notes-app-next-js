@@ -62,25 +62,3 @@ export async function POST(request: NextRequest) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// export function GET(request: NextRequest) {
-//     try {
-//         console.log(request);
-//         console.log('request rcvd');
-
-//         return NextResponse.json({success: true, message: 'Data fetched'});
-//     } catch(e) {
-//         console.log(e);
-//         return NextResponse.json({success: false, message: 'Internal server error'}, {status: 500});
-//     }
-// }
