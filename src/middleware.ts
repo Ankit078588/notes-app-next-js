@@ -2,31 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 
-// export default function middleware(request: NextRequest) {
-//     console.log('Running middleware fxn.');
-//     const token = request.cookies.get('token')?.value;
-//     const pathname = request.nextUrl.pathname;
-
-//     // Already logged in  + visits /login OR /signup   ---> redirect to /dashboard
-//     if(token && pathname === '/login' || pathname === '/signup') {
-//         return NextResponse.redirect( request.nextUrl.origin + '/dashboard');
-//     }
-
-//     // Not logged in  + visits /dashboard   ---> redirect to /login
-//     if(!token && pathname === '/dashboard') {
-//         return NextResponse.redirect( request.nextUrl.origin + '/login');
-//     }
-// }
-
-
 
 export default async function middleware(request: NextRequest) {
-    console.log('Running middleware fxn.');
-
     // extract token
     // const token = request.cookies.get('token')?.value;
     // if(!token) {
-    //     return NextResponse.redirect(new URL('/login', request.nextUrl.origin));
+        // return NextResponse.redirect(new URL('/login', request.nextUrl.origin));
     // }
 
     // verify token
@@ -37,7 +18,7 @@ export default async function middleware(request: NextRequest) {
 
 
 export const config = {
-    matcher: ['/dashboard', '/api/:path*']
+    matcher: ['/api/todos/:path*']
 }
 
 

@@ -4,14 +4,14 @@ import { redirect } from "next/navigation";
 
 
 
-export default function LoginPage() {
-    // check user is already logged in
-    const user = getLoggedInUser();
-    if(user) {
-        redirect('/dashboard');
+export default async function SignupPage() {
+    const user = await getLoggedInUser();
+
+    if(!user) {
+        return <Signup />
     }
 
-    return <Signup />
+    redirect('/dashboard');
 }
 
 
