@@ -12,7 +12,11 @@ export default async function middleware(request: NextRequest) {
 
     // verify token
     // const payload = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
-    // console.log(payload);
+    // if(!payload) {
+    //      return NextResponse.next
+    // }
+
+
 }
 
 
