@@ -5,7 +5,6 @@ import { SessionModel } from "@/models/sessionModel";
 
 
 
-
 export async function getLoggedInUser() {
     try {
         const cookieStore = await cookies();

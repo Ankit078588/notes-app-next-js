@@ -34,7 +34,7 @@ export default function Dashboard() {
     useEffect( () => {
         fetchTodos();
         fetchUser();
-    }, [] )
+    })
 
     async function fetchTodos() {
         try {
